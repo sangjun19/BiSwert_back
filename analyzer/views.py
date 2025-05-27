@@ -30,8 +30,11 @@ class AnalyzeFileView(APIView):
                 temp_path = temp_file.name
 
             try:
-                # Python 스크립트 실행 (GPU 서버의 스크립트 경로로 수정 필요)
-                result = subprocess.run(['python', 'analyze_script.py', temp_path], 
+                # analyze_script.py의 절대 경로 계산
+                script_path = os.path.join(settings.BASE_DIR, 'analyze_script.py')
+                
+                # Python 스크립트 실행
+                result = subprocess.run(['python', script_path, temp_path], 
                                      capture_output=True, 
                                      text=True,
                                      encoding='utf-8')
