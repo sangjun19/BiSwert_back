@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import sys
+import os
+
+# PyTorch가 설치된 경로 추가
+sys.path.append('/usr/local/lib/python3.10/dist-packages')
+sys.path.append('/usr/local/lib/python3.10/dist-packages/torch')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

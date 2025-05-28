@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 가상환경
+venv/
+env/
+ENV/
+
+# 모델 체크포인트 및 결과
+results-checkpoint*/
+*.pt
+*.pth
+*.bin
+
+# IDE 관련
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 시스템 파일
+.DS_Store
+Thumbs.db 
