@@ -6,6 +6,7 @@ from django.conf import settings
 import subprocess
 import os
 import tempfile
+import sys
 
 # Create your views here.
 
@@ -34,7 +35,7 @@ class AnalyzeFileView(APIView):
                 script_path = os.path.join(settings.BASE_DIR, 'analyze_script.py')
                 
                 # Python 스크립트 실행
-                result = subprocess.run(['python', script_path, temp_path], 
+                result = subprocess.run([sys.executable, script_path, temp_path], 
                                      capture_output=True, 
                                      text=True,
                                      encoding='utf-8')
