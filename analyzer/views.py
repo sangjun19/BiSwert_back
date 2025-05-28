@@ -72,3 +72,25 @@ class AnalyzeFileView(APIView):
                 'predictedLabel': 'error',
                 'message': f'분석 중 오류가 발생했습니다: {str(e)}'
             }, status=500)
+
+def analyze_file(file_path):
+    # 현재 스크립트의 디렉토리를 기준으로 상대 경로 설정
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # 수정된 모델 경로
+    model_path = os.path.join(base_dir, "results", "8class", "checkpoint-1400")
+    
+    print(f"Loading model from: {model_path}")  # 디버깅용 출력
+    
+    # local_files_only=True 추가하고 trust_remote_code=True 추가
+    model = BertForSequenceClassification.from_pretrained(
+        model_path,
+        local_files_only=True,  # 로컬 파일만 사용
+        trust_remote_code=True  # 로컬 코드 신뢰
+    )
+    
+    tokenizer = BertTokenizer.from_pretrained(
+        model_path,
+        local_files_only=True,
+        trust_remote_code=True
+    )
