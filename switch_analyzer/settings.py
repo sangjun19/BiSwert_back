@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-your-secret-key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
 
 
 # Application definition
@@ -136,5 +136,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 # GPU 서버 설정
-#GPU_SERVER_URL = 'http://localhost:5000'  # GPU 서버의 실제 주소로 변경하세요
-GPU_SERVER_URL = 'yj-noh-3060@168.188.126.228'
+GPU_SERVER_URL = 'http://localhost:5000'  # GPU 서버의 실제 주소로 변경하세요
