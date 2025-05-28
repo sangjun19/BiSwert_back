@@ -7,6 +7,7 @@ import subprocess
 import os
 import tempfile
 import sys
+from transformers import BertForSequenceClassification, BertTokenizer
 
 # Create your views here.
 
