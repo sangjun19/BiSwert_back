@@ -13,6 +13,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 모델 관련 상수 정의
+MODEL_BASE_DIR = "/home/yj-noh-3060/Desktop/hy-workspace/hyenv/switch_classification"
 MODEL_DIR = "results/8class"  # 모델 파일이 저장될 디렉토리
 MODEL_NAME = "checkpoint-1400"  # 모델 체크포인트 이름
 
@@ -29,29 +30,32 @@ LABEL_NAMES = [
 
 def ensure_model_path():
     """모델 디렉토리 경로를 확인하고 생성하는 함수"""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(base_dir, MODEL_DIR)
-    model_path = os.path.join(model_dir, MODEL_NAME)
+    model_path = os.path.join(MODEL_BASE_DIR, MODEL_DIR, MODEL_NAME)
     
     if not os.path.exists(model_path):
         logger.error(f"""
 모델 파일을 찾을 수 없습니다. 다음 경로에 모델 파일이 필요합니다:
 {model_path}
 
-다음 단계를 따라 모델 파일을 설정하세요:
-1. '{MODEL_DIR}' 디렉토리 구조를 생성하세요: mkdir -p {MODEL_DIR}
-2. 학습된 모델 파일을 '{MODEL_DIR}/{MODEL_NAME}' 위치에 복사하세요.
+올바른 모델 파일이 다음 경로에 있는지 확인하세요:
+{model_path}
 """)
         raise FileNotFoundError(f"모델 파일이 없습니다. 경로: {model_path}")
     
     return model_path
 
-def load_model_and_tokenizer(model_path: str, tokenizer_path: str) -> tuple[BertForSequenceClassification, BertTokenizer]:
+def load_model_and_tokenizer(model_path: str) -> tuple[BertForSequenceClassification, BertTokenizer]:
     """모델과 토크나이저를 로드하는 함수"""
     try:
         logger.info(f"모델을 로드합니다: {model_path}")
+        
+        # 기본 BERT 토크나이저 사용
+        tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
+        logger.info("기본 BERT 토크나이저를 로드했습니다.")
+        
+        # 모델 로드
         model = BertForSequenceClassification.from_pretrained(model_path)
-        tokenizer = BertTokenizer.from_pretrained(tokenizer_path)
+        logger.info("모델 로드를 완료했습니다.")
         
         # GPU 사용 가능 시 활용
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -86,7 +90,7 @@ def analyze_file(file_path: str) -> str:
         model_path = ensure_model_path()
         
         # 모델과 토크나이저 로드
-        model, tokenizer, device = load_model_and_tokenizer(model_path, model_path)
+        model, tokenizer, device = load_model_and_tokenizer(model_path)
         
         # 파일 읽기
         test_text = read_file_content(file_path)
