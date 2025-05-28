@@ -14,8 +14,23 @@ logger = logging.getLogger(__name__)
 
 # 모델 관련 상수 정의
 BASE_DIR = "/home/yj-noh-3060/Desktop/hy-workspace/hyenv/switch_classification"
-MODEL_PATH = os.path.join(BASE_DIR, "results/8class/checkpoint-1400")
 TOKENIZER_PATH = os.path.join(BASE_DIR, "tokenizer")
+
+def get_latest_checkpoint(base_dir: str) -> str:
+    """8class 디렉토리에서 사용 가능한 체크포인트 폴더를 찾는 함수"""
+    checkpoint_dir = os.path.join(base_dir, "results/8class")
+    if not os.path.exists(checkpoint_dir):
+        raise FileNotFoundError(f"8class 디렉토리를 찾을 수 없습니다: {checkpoint_dir}")
+    
+    # 디렉토리 내의 모든 폴더 가져오기
+    checkpoints = [d for d in os.listdir(checkpoint_dir) if os.path.isdir(os.path.join(checkpoint_dir, d))]
+    if not checkpoints:
+        raise FileNotFoundError(f"사용 가능한 체크포인트 폴더가 없습니다: {checkpoint_dir}")
+    
+    # 첫 번째 체크포인트 선택
+    selected_checkpoint = checkpoints[0]
+    logger.info(f"선택된 체크포인트 폴더: {selected_checkpoint}")
+    return os.path.join(checkpoint_dir, selected_checkpoint)
 
 LABEL_NAMES = [
     "switch_origin",
@@ -30,11 +45,12 @@ LABEL_NAMES = [
 
 def ensure_model_paths():
     """모델과 토크나이저 경로를 확인하는 함수"""
-    if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError(f"모델 파일이 없습니다. 경로: {MODEL_PATH}")
+    model_path = get_latest_checkpoint(BASE_DIR)
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"모델 파일이 없습니다. 경로: {model_path}")
     if not os.path.exists(TOKENIZER_PATH):
         raise FileNotFoundError(f"토크나이저 파일이 없습니다. 경로: {TOKENIZER_PATH}")
-    return MODEL_PATH, TOKENIZER_PATH
+    return model_path, TOKENIZER_PATH
 
 def read_file_content(file_path: str) -> Optional[str]:
     """파일 내용을 읽는 함수"""
