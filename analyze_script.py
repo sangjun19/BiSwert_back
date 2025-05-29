@@ -13,7 +13,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 모델 관련 상수 정의
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = "/home/yj-noh-3060/Desktop/hy-workspace/hyenv/switch_classification"
 MODEL_PATH = os.path.join(BASE_DIR, "final_model/8class")
 TOKENIZER_PATH = os.path.join(BASE_DIR, "tokenizer/8class")
 
