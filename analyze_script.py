@@ -17,20 +17,13 @@ BASE_DIR = "/home/yj-noh-3060/Desktop/hy-workspace/hyenv/switch_classification"
 MODEL_PATH = os.path.join(BASE_DIR, "final_model/8class")
 TOKENIZER_PATH = os.path.join(BASE_DIR, "tokenizer/8class")
 
-def get_latest_checkpoint(model_dir: str) -> str:
-    """8class 디렉토리에서 사용 가능한 체크포인트 폴더를 찾는 함수"""
-    if not os.path.exists(model_dir):
-        raise FileNotFoundError(f"모델 디렉토리를 찾을 수 없습니다: {model_dir}")
-    
-    # 디렉토리 내의 모든 폴더 가져오기
-    checkpoints = [d for d in os.listdir(model_dir) if os.path.isdir(os.path.join(model_dir, d))]
-    if not checkpoints:
-        raise FileNotFoundError(f"사용 가능한 체크포인트 폴더가 없습니다: {model_dir}")
-    
-    # 첫 번째 체크포인트 선택
-    selected_checkpoint = checkpoints[0]
-    logger.info(f"선택된 체크포인트 폴더: {selected_checkpoint}")
-    return os.path.join(model_dir, selected_checkpoint)
+def ensure_model_paths():
+    """모델과 토크나이저 경로를 확인하는 함수"""
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError(f"모델 파일이 없습니다. 경로: {MODEL_PATH}")
+    if not os.path.exists(TOKENIZER_PATH):
+        raise FileNotFoundError(f"토크나이저 파일이 없습니다. 경로: {TOKENIZER_PATH}")
+    return MODEL_PATH, TOKENIZER_PATH
 
 LABEL_NAMES = [
     "switch_origin",
@@ -42,15 +35,6 @@ LABEL_NAMES = [
     "non_switch_opaque",
     "non_switch_vir"
 ]
-
-def ensure_model_paths():
-    """모델과 토크나이저 경로를 확인하는 함수"""
-    model_path = get_latest_checkpoint(MODEL_PATH)
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"모델 파일이 없습니다. 경로: {model_path}")
-    if not os.path.exists(TOKENIZER_PATH):
-        raise FileNotFoundError(f"토크나이저 파일이 없습니다. 경로: {TOKENIZER_PATH}")
-    return model_path, TOKENIZER_PATH
 
 def read_file_content(file_path: str) -> Optional[str]:
     """파일 내용을 읽는 함수"""
@@ -73,9 +57,9 @@ def analyze_file(file_path: str) -> str:
         # 모델과 토크나이저 경로 확인
         model_path, tokenizer_path = ensure_model_paths()
         
-        # 토크나이저 로드 (bert-base-uncased 사용)
+        # 토크나이저 로드
         logger.info("토크나이저를 로드합니다...")
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        tokenizer = BertTokenizer.from_pretrained(tokenizer_path)
         
         # 모델 로드
         logger.info(f"모델을 로드합니다: {model_path}")
